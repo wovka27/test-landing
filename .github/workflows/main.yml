@@ -2,8 +2,7 @@ name: test-landing
 
 on:
   push:
-    branches: [ 'master' ]
-
+    branches: [ master ]
   workflow_dispatch:
 
 permissions:
@@ -12,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: 'pages'
+  group: pages
   cancel-in-progress: true
 
 jobs:
@@ -22,24 +21,23 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Set up Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
+
       - name: Install dependencies
         run: npm ci
-      - name: Clean cache
-        run: npm cache clean --force
-      - name: Build
+
+      - name: Build project
         run: npm run build
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Upload artifact
+
+      - name: Upload dist folder
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
+          path: dist
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
