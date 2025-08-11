@@ -1,0 +1,108 @@
+.session {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 609px 1fr;
+  grid-gap: 17px;
+
+  &__title {
+    @include mobile {
+      display: inline-block;
+      width: min-content;
+    }
+  }
+
+  &__img-wrapper {
+    width: 100%;
+    height: 528px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__content-wrapper {
+    margin-top: 47px;
+  }
+
+  &__event-info {
+    margin-top: 60px;
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 120%;
+    color: #333;
+
+    &__row {
+      display: table-row;
+      border-bottom: 1px solid #ccc;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    &__label,
+    &__value {
+      display: table-cell;
+      padding: 8px 0;
+      vertical-align: top;
+    }
+
+    &__label {
+      padding-right: 20px;
+      white-space: nowrap;
+      border-right: 1px solid #ccc; // вертикальная линия
+    }
+
+    &__value {
+      padding-left: 20px; // отступ после линии
+      font-weight: normal;
+
+      b {
+        font-weight: bold;
+      }
+
+      s {
+        color: #a00;
+        margin-right: 8px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      display: block;
+
+      &__row {
+        display: block;
+        padding: 8px 0;
+        border-bottom: 1px solid #ccc;
+      }
+
+      &__label {
+        display: block;
+        border-right: none; // убираем линию на мобилке
+        margin-bottom: 2px;
+        padding-right: 0;
+      }
+
+      &__value {
+        display: block;
+        padding-left: 0;
+      }
+    }
+  }
+
+  &__link {
+    margin-top: 48px;
+  }
+
+  @media screen and (max-width: 1200px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @include tablet {
+    grid-template-columns: 1fr;
+  }
+}

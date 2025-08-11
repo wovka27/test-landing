@@ -1,0 +1,67 @@
+html {
+  scroll-behavior: smooth;
+  scrollbar-gutter: auto;
+}
+
+body {
+  @include fluid-text(20, 18);
+
+  font-family: var(--font-family-base);
+  font-weight: 400;
+  line-height: 1.28;
+  color: var(--color-dark);
+  background-color: var(--color-light);
+  letter-spacing: 0;
+}
+
+button {
+  border-color: transparent;
+}
+
+a,
+button,
+input,
+textarea,
+svg * {
+  transition-duration: var(--transition-duration);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Merriweather';
+  font-weight: 400;
+  line-height: 120%;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--color-dark);
+
+  span.strong {
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+}
+
+h1, .h1 {
+  @include fluid-text(60, 36);
+}
+
+h2, .h2 {
+  max-width: 806px;
+  @include fluid-text(54, 36);
+}
+
+h3, .h3 {
+  @include fluid-text(36, 28);
+  font-weight: 500;
+  line-height: 135%;
+}
+
+h4, .h4 {
+  @include fluid-text(20, 18);
+}
+

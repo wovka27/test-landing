@@ -1,0 +1,189 @@
+.header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  &:before {
+    position: absolute;
+    content: '';
+    inset: 0;
+    background-color: #E9DED4;
+    z-index: -2;
+  }
+
+  &__bg {
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    inset: 0;
+    img {
+      display: flex;
+    }
+  }
+
+  &__img-bg {
+    inset: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    filter: sepia(1) saturate(2) hue-rotate(319deg) brightness(0.94) opacity(0.3);
+  }
+
+  &__img-ellipse {
+    overflow: hidden;
+    border-radius: 50%;
+    position: absolute;
+    top: -100px;
+    left: 45%;
+    z-index: 9;
+    animation: rotate 30s linear infinite;
+
+    @include mobile {
+      left: 50%;
+      top: 55%;
+      translate: -50% 0;
+      width: 310px;
+      height: 310px;
+    }
+  }
+
+  @include mobile {
+    &__img-chess1,
+    &__img-chess2,
+    &__img-chess3,
+    &__img-chess-horse, {
+
+    }
+  }
+
+  &__img-chess1 {
+    position: absolute;
+    bottom: 25%;
+    left: 50%;
+    z-index: 10;
+    animation: swap 1s linear infinite alternate;
+  }
+
+  &__img-chess2 {
+    position: absolute;
+    bottom: 40%;
+    left: 72%;
+    z-index: 10;
+    animation: swap1 1s linear infinite alternate;
+  }
+
+  &__img-chess3 {
+    position: absolute;
+    bottom: 11%;
+    left: 83%;
+    z-index: 24;
+  }
+
+  &__img-chess-horse {
+    width: 10rem;
+    height: auto;
+    position: absolute;
+    bottom: 5%;
+    left: 60%;
+    z-index: 25;
+  }
+
+  &__img-city {
+    position: absolute;
+    bottom: 35px;
+    left: 50%;
+    translate: -50% 0;
+    width: 1623px;
+    height: auto;
+    z-index: 20;
+
+    @include mobile {
+      background-size: 600px / 300px;
+    }
+  }
+
+  &__logo-link {
+    margin-top: 26px;
+    grid-column: span 2;
+    margin-bottom: 62px;
+  }
+
+  &__content {
+    max-width: 542px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  h1 p {
+    width: 100%;
+    margin-bottom: 0;
+    display: inline-block;
+    &:nth-child(2) {
+      text-indent: 15%;
+    }
+    &:last-child {
+      text-indent: 30px;
+    }
+  }
+
+
+  &__subtitle {
+    margin: 24px 0 40px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 130%;
+  }
+
+  &__inner {
+    margin-bottom: 130px;
+    flex: 0 1 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: max-content 1fr;
+    grid-gap: 10px;
+    width: 100%;
+    z-index: 100;
+
+    @include tablet {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__link-buttons {
+    display: flex;
+    gap: 10px;
+
+    @include mobile {
+      flex-direction: column;
+    }
+
+    a {
+      flex: 0 1 50%;
+    }
+  }
+}
+
+@keyframes rotate {
+  to {
+    rotate: 180deg;
+  }
+}
+
+@keyframes swap {
+  to {
+    rotate: -20deg;
+    translate: 2%;
+  }
+}
+
+@keyframes swap1 {
+  to {
+    rotate: 20deg;
+    translate: 10%;
+  }
+}

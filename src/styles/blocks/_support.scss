@@ -1,0 +1,41 @@
+.support {
+
+  &__title-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    p {
+      display: inline;
+    }
+
+    @media (max-width: 793px) {
+      flex-direction: column;
+      gap: 20px;
+      p {
+        margin-bottom: 0;
+        &:first-child {
+          order: 0;
+        }
+        &:last-child {
+          order: 2;
+        }
+        display: block;
+      }
+
+      img {
+        order: 1;
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+
+  &__title {
+    max-width: 764px;
+
+    @include mobile {
+      display: contents;
+    }
+  }
+}

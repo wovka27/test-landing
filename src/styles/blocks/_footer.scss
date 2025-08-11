@@ -1,0 +1,16 @@
+.footer {
+  background-color: var(--color-brown);
+  min-height: 150px;
+  &__inner {
+    padding-top: 40px;
+    padding-bottom: 72px;
+
+  }
+
+  @include mobile {
+    &__inner {
+      padding-bottom: 60px;
+
+    }
+  }
+}

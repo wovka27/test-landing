@@ -1,0 +1,50 @@
+.marquee {
+  z-index: 1000;
+  height: max-content;
+  background-color: var(--color-primary);
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 18px 0;
+  color: var(--color-white);
+
+  [aria-label] {
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    white-space: pre;
+    text-decoration: none;
+
+    &::before {
+      content: attr(aria-label) attr(aria-label);
+      text-transform: uppercase;
+      position: absolute;
+      left: 0;
+      width: min-content;
+      animation: run 15s linear infinite;
+      will-change: transform;
+    }
+
+    &::after {
+      content: attr(aria-label);
+      width: min-content;
+      visibility: hidden;
+    }
+
+    @include hover {
+      [aria-label]::before {
+        animation-play-state: paused;
+      }
+    }
+  }
+
+  @keyframes run {
+    to {
+      transform: translateX(-50%)
+    }
+  }
+}
+
