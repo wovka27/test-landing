@@ -1016,7 +1016,7 @@ h4, .h4 {
 @media (max-width: 767px) {
   .carousel {
     grid-template-columns: 1fr;
-    gap: 40px;
+    grid-row-gap: 40px;
   }
 }
 .carousel-actions {
@@ -1031,7 +1031,6 @@ h4, .h4 {
   .carousel-actions {
     justify-self: center;
     grid-row-start: 3;
-    grid-row-end: 4;
   }
 }
 .carousel-item {
