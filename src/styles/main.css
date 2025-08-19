@@ -457,6 +457,7 @@ h4, .h4 {
   background-repeat: no-repeat;
 }
 .ui-button--circle {
+  padding: 0;
   border-radius: 50%;
   width: 44px;
   height: 44px;
@@ -854,6 +855,8 @@ h4, .h4 {
   flex-wrap: nowrap;
 }
 .stages__dot, .stages .pagination-dot {
+  flex-shrink: 0;
+  padding: 0;
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -884,6 +887,7 @@ h4, .h4 {
   .stages__list {
     overflow: hidden;
     margin-top: 148px;
+    margin-inline: calc(var(--container-padding-x) * -1);
   }
   .stages h2 {
     max-width: 335px;
@@ -905,7 +909,8 @@ h4, .h4 {
   .stages__track {
     display: grid;
     grid-auto-flow: column;
-    gap: 16px;
+    grid-template-columns: inherit;
+    gap: 0;
   }
 }
 .stages__item {
@@ -915,6 +920,15 @@ h4, .h4 {
   padding: 20px;
   background-blend-mode: color-burn;
   background: var(--color-brown) url("~images/bg.png") center/cover no-repeat;
+}
+@media (max-width: 767px) {
+  .stages__item {
+    margin-inline: var(--container-padding-x);
+  }
+}
+.stages__item-slide {
+  flex: 0 0 auto;
+  flex-shrink: 0;
 }
 .stages__item-wrapper {
   display: contents;
@@ -929,7 +943,9 @@ h4, .h4 {
     display: flex;
     height: 300px;
     flex-direction: column;
-    padding: 62px 20px 34px;
+    padding-top: 62px;
+    margin-inline: 20px;
+    padding-bottom: 34px;
   }
   .stages__item-wrapper .stages__item {
     padding: 0;

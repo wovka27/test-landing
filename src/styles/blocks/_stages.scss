@@ -13,6 +13,8 @@
   }
 
   &__dot, .pagination-dot {
+    flex-shrink: 0;
+    padding: 0;
     width: 10px;
     height: 10px;
     border-radius: 50%;
@@ -37,6 +39,7 @@
     &__list {
       overflow: hidden;
       margin-top: 148px;
+      margin-inline: calc(var(--container-padding-x) * -1);
     }
 
     h2 {
@@ -58,7 +61,8 @@
     @include mobile {
       display: grid;
       grid-auto-flow: column;
-      gap: 16px;
+      grid-template-columns: inherit;
+      gap: 0;
     }
   }
 
@@ -70,6 +74,15 @@
     background-blend-mode: color-burn;
     background: var(--color-brown) url("~images/bg.png") center/cover no-repeat;
     //backdrop-filter: sepia(1) saturate(2) hue-rotate(319deg) brightness(0.94);
+
+    @include mobile {
+      margin-inline: var(--container-padding-x);
+    }
+
+    &-slide {
+      flex: 0 0 auto;
+      flex-shrink: 0;
+    }
 
     &-wrapper {
       display: contents;
@@ -83,7 +96,9 @@
         display: flex;
         height: 300px;
         flex-direction: column;
-        padding: 62px 20px 34px;
+        padding-top: 62px;
+        margin-inline: 20px;
+        padding-bottom: 34px;
         .stages__item {
           padding: 0;
           height: max-content;

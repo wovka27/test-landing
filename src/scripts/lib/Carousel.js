@@ -1,18 +1,13 @@
 import debounce from "@/scripts/utils/debounce";
 
-/**
- * Модуль карусели участников турнира на чистом JavaScript
- * Поддерживает зацикливание и автопереключение
- */
-export default class {
+export default class Carousel {
   constructor(containerSelector, options = {}) {
-    this.containerSelector = containerSelector
-    this.container = document.querySelector(this.containerSelector);
+    this.container = document.querySelector(containerSelector);
+
     if (!this.container) {
-      throw new Error(`Контейнер ${containerSelector} не найден`);
+      throw new Error(`Carousel: контейнер "${containerSelector}" не найден`);
     }
 
-    // Настройки по умолчанию
     this.options = {
       autoPlay: true,
       autoPlayDelay: 4000,
@@ -20,364 +15,265 @@ export default class {
       transitionDuration: 600,
       pauseOnHover: true,
       infinite: true,
-      slidesToShow: 3,
+      slidesToShow: { 0: 1, 768: 2, 1200: 3 }, // адаптивный объект
       slidesToScroll: 1,
-      // Селекторы для внешних элементов управления
+      activeBreakpoint: null, // напр. "(max-width: 768px)"
+      // Селекторы управления
       prevButtonSelector: null,
       nextButtonSelector: null,
-      counterSelector: null,
       currentSlideSelector: null,
       totalSlidesSelector: null,
-      // Пагинация
       pagination: false,
       paginationSelector: null,
+      containerTrack: '.carousel-track',
       ...options
     };
 
-    this.containerTrack = options.containerTrack || '.carousel-track';
-
-    this.currentSlide = 0;
+    this.track = null;
     this.slides = [];
+    this.currentSlide = 0;
     this.totalSlides = 0;
-    this.autoPlayTimer = null;
+    this.slidesToShow = 1;
     this.isTransitioning = false;
-    this.slidesToShow = this.options.slidesToShow;
-
-    // Внешние элементы управления
-    this.prevBtn = null;
-    this.nextBtn = null;
-    this.counterElement = null;
-    this.currentSlideElement = null;
-    this.totalSlidesElement = null;
-    this.paginationContainer = null;
+    this.autoPlayTimer = null;
     this.paginationDots = [];
 
-    this.init();
+    this.mediaQuery = null;
+    this.isActive = false;
+
+    this.initMedia();
   }
 
-  init() {
-    this.createCarouselStructure();
-    this.setupSlides();
-    this.setupExternalControls();
-    this.setupPagination();
-    this.bindEvents();
-    this.updateCounter();
-    this.updateArrows();
-    this.updatePagination();
-    this.startAutoPlay();
-    this.handleResize();
-  }
-
-  createCarouselStructure() {
-    // Получаем ссылки на элементы
-    this.viewport = this.container
-    this.track = this.container.querySelector(this.containerTrack);
-  }
-
-  setupExternalControls() {
-    // Находим внешние элементы управления по селекторам
-    if (this.options.prevButtonSelector) {
-      this.prevBtn = document.querySelector(this.options.prevButtonSelector);
-    }
-
-    if (this.options.nextButtonSelector) {
-      this.nextBtn = document.querySelector(this.options.nextButtonSelector);
-    }
-
-    if (this.options.counterSelector) {
-      this.counterElement = document.querySelector(this.options.counterSelector);
-    }
-
-    if (this.options.currentSlideSelector) {
-      this.currentSlideElement = document.querySelector(this.options.currentSlideSelector);
-    }
-
-    if (this.options.totalSlidesSelector) {
-      this.totalSlidesElement = document.querySelector(this.options.totalSlidesSelector);
-    }
-
-    // Обновляем общий счетчик слайдов
-    if (this.totalSlidesElement) {
-      this.totalSlidesElement.textContent = Math.ceil(this.totalSlides / this.slidesToShow);
-    }
-
-    // Находим контейнер для пагинации
-    if (this.options.paginationSelector) {
-      this.paginationContainer = document.querySelector(this.options.paginationSelector);
-    }
-  }
-
-  setupPagination() {
-    if (!this.options.pagination || !this.paginationContainer) return;
-
-    // Очищаем контейнер
-    this.paginationContainer.innerHTML = '';
-    this.paginationDots = [];
-
-    const totalPages = this.getTotalSlides();
-
-    // Создаем точки пагинации
-    for (let i = 0; i < totalPages; i++) {
-      const dot = document.createElement('li');
-      dot.className = 'pagination-dot';
-      dot.setAttribute('data-slide', i.toString());
-      dot.setAttribute('aria-label', `Перейти к слайду ${i + 1}`);
-
-      this.paginationContainer.appendChild(dot);
-      this.paginationDots.push(dot);
-
-      // Добавляем обработчик клика
-      dot.addEventListener('click', () => {
-        this.goToSlide(i);
-      });
-    }
-  }
-
-  setupSlides() {
-    this.slides = Array.from(this.track.children);
-    this.totalSlides = this.slides.length;
-
-
-    if (this.totalSlides === 0) {
-      console.warn('Нет слайдов для отображения');
+  initMedia() {
+    if (!this.options.activeBreakpoint) {
+      this.init();
       return;
     }
 
-    // Добавляем классы к слайдам
-    this.slides.forEach((slide, index) => {
-      slide.classList.add('carousel-slide');
-      slide.setAttribute('data-slide', index);
-    });
+    this.mediaQuery = window.matchMedia(this.options.activeBreakpoint);
+    this.mediaQuery.addEventListener("change", this.handleMediaChange);
+    this.handleMediaChange(this.mediaQuery);
+  }
 
-    // Устанавливаем динамическую ширину слайдов
+  handleMediaChange = (e) => {
+    if (e.matches && !this.isActive) {
+      this.init();
+    } else if (!e.matches && this.isActive) {
+      this.destroy();
+    }
+  }
+
+  init() {
+    this.isActive = true;
+
+    this.track = this.container.querySelector(this.options.containerTrack);
+    if (!this.track) throw new Error("Carousel: не найден track контейнер");
+
+    this.slides = Array.from(this.track.children);
+    this.totalSlides = this.slides.length;
+
+    this.setupResponsiveSlidesToShow();
     this.updateSlideWidths();
 
-    // Для бесконечной прокрутки клонируем слайды
     if (this.options.infinite && this.totalSlides > this.slidesToShow) {
       this.cloneSlides();
+      this.currentSlide = this.slidesToShow;
     }
 
+    this.bindControls();
+    this.setupPagination();
+    this.updateCounter();
+    this.updatePagination();
+    this.updateArrows();
     this.updateTrackPosition(false);
+
+    if (this.options.autoPlay) this.startAutoPlay();
+    window.addEventListener("resize", this.handleResize);
   }
 
-  cloneSlides() {
-    // Клонируем первые слайды в конец
-    for (let i = 0; i < this.slidesToShow; i++) {
+  bindControls() {
+    if (this.options.prevButtonSelector) {
+      const prev = document.querySelector(this.options.prevButtonSelector);
+      prev?.addEventListener("click", () => this.prevSlide());
+    }
+
+    if (this.options.nextButtonSelector) {
+      const next = document.querySelector(this.options.nextButtonSelector);
+      next?.addEventListener("click", () => this.nextSlide());
+    }
+
+    if (this.options.pauseOnHover) {
+      this.container.addEventListener("mouseenter", () => this.pauseAutoPlay());
+      this.container.addEventListener("mouseleave", () => this.startAutoPlay());
+    }
+
+    this.track.addEventListener("transitionend", this.handleTransitionEnd);
+
+    this.setupTouchEvents();
+  }
+
+  setupPagination() {
+    if (!this.options.pagination || !this.options.paginationSelector) return;
+    const container = document.querySelector(this.options.paginationSelector);
+    if (!container) return;
+
+    container.innerHTML = "";
+    this.paginationDots = [];
+
+    const pages = this.getTotalPages();
+    for (let i = 0; i < pages; i++) {
+      const dot = document.createElement("button");
+      dot.className = "pagination-dot";
+      dot.dataset.slide = i;
+      dot.addEventListener("click", () => this.goToSlide(i));
+      container.appendChild(dot);
+      this.paginationDots.push(dot);
+    }
+  }
+
+  setupResponsiveSlidesToShow() {
+    const width = window.innerWidth;
+    let slides = 1;
+    for (const bp in this.options.slidesToShow) {
+      if (width >= bp) {
+        slides = this.options.slidesToShow[bp];
+      }
+    }
+    this.slidesToShow = slides;
+  }
+
+  removeClones() {
+    this.track.querySelectorAll('.carousel-slide-clone, .clone').forEach(n => n.remove());
+  }
+
+  cloneSlides(forSlidesToShow = this.slidesToShow) {
+    if (!this.options.infinite || this.totalSlides <= forSlidesToShow) return;
+
+    // клоны в конец
+    for (let i = 0; i < forSlidesToShow; i++) {
       const clone = this.slides[i].cloneNode(true);
-      clone.classList.add('carousel-slide-clone');
+      clone.classList.add('carousel-slide-clone', 'clone');
       this.track.appendChild(clone);
     }
-
-    // Клонируем последние слайды в начало
-    for (let i = this.totalSlides - this.slidesToShow; i < this.totalSlides; i++) {
+    // клоны в начало
+    for (let i = this.totalSlides - forSlidesToShow; i < this.totalSlides; i++) {
       const clone = this.slides[i].cloneNode(true);
-      clone.classList.add('carousel-slide-clone');
+      clone.classList.add('carousel-slide-clone', 'clone');
       this.track.insertBefore(clone, this.track.firstChild);
     }
-
-    // Обновляем позицию для компенсации клонированных слайдов
-    this.currentSlide = this.slidesToShow;
   }
 
-  bindEvents() {
-    // События для внешних стрелок
-    if (this.prevBtn) {
-      this.prevBtn.addEventListener('click', () => this.prevSlide());
-    }
-
-    if (this.nextBtn) {
-      this.nextBtn.addEventListener('click', () => this.nextSlide());
-    }
-
-    // Пауза при наведении
-    if (this.options.pauseOnHover) {
-      this.container.addEventListener('mouseenter', () => this.pauseAutoPlay());
-      this.container.addEventListener('mouseleave', () => this.startAutoPlay());
-    }
-
-    // Обработка событий transitionend для бесконечной прокрутки
-    this.track.addEventListener('transitionend', () => {
-      this.handleTransitionEnd();
-    });
-
-    // Поддержка свайпов на мобильных устройствах
-    this.setupTouchEvents();
-
-    // Обработчики для пагинации добавляются в setupPagination()
-    this.setupPagination()
-    // Обработка изменения размера окна
-    window.addEventListener('resize', this.handleResize);
-  }
-
-  handleResize = debounce(() => {
-    const width = window.innerWidth;
-    let newSlidesToShow = this.options.slidesToShow;
-
-    if (width <= 850) {
-      newSlidesToShow = 1;
-    } else if (width <= 1200) {
-      newSlidesToShow = 2;
-    }
-
-    if (newSlidesToShow !== this.slidesToShow) {
-      this.slidesToShow = newSlidesToShow;
-      this.updateSlideWidths();
-      this.updateTrackPosition(false);
-      this.updateCounter();
-      this.updateArrows();
-      this.setupPagination(); // Пересоздаем пагинацию при изменении размера
-      this.updatePagination();
-    }
-  }, 200)
-
-  setupTouchEvents() {
-    let startX = 0;
-    let startY = 0;
-    let isTracking = false;
-
-    this.viewport.addEventListener('touchstart', (e) => {
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      isTracking = true;
-    });
-
-    this.viewport.addEventListener('touchmove', (e) => {
-      if (!isTracking) return;
-
-      const currentX = e.touches[0].clientX;
-      const currentY = e.touches[0].clientY;
-      const deltaX = startX - currentX;
-      const deltaY = startY - currentY;
-
-      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 30) {
-        e.preventDefault();
-      }
-    });
-
-    this.viewport.addEventListener('touchend', (e) => {
-      if (!isTracking) return;
-
-      const endX = e.changedTouches[0].clientX;
-      const deltaX = startX - endX;
-
-      if (Math.abs(deltaX) > 50) {
-        if (deltaX > 0) {
-          this.nextSlide();
-        } else {
-          this.prevSlide();
-        }
-      }
-
-      isTracking = false;
-    });
-  }
-
-  nextSlide() {
-    if (this.isTransitioning) return;
-
-    this.currentSlide += this.options.slidesToScroll;
-    this.updateTrackPosition();
-    this.updateCounter();
-    this.updateArrows();
-    this.updatePagination();
-  }
-
-  prevSlide() {
-    if (this.isTransitioning) return;
-
-    this.currentSlide -= this.options.slidesToScroll;
-    this.updateTrackPosition();
-    this.updateCounter();
-    this.updateArrows();
-    this.updatePagination();
-  }
-
-  updateTrackPosition(animate = true) {
-    const slideWidth = this.viewport.offsetWidth / this.slidesToShow;
-    const translateX = -this.currentSlide * slideWidth;
-
-    if (animate) {
-      this.isTransitioning = true;
-      this.track.style.transition = `transform ${this.options.transitionDuration}ms ${this.options.transition}`;
-    } else {
-      this.track.style.transition = 'none';
-    }
-
-    this.track.style.transform = `translateX(${translateX}px)`;
-  }
-
-  handleTransitionEnd() {
+  handleTransitionEnd = () => {
     this.isTransitioning = false;
-
     if (!this.options.infinite) return;
 
-    const maxSlide = this.totalSlides;
-    const minSlide = 0;
-
-    // Обработка бесконечной прокрутки
-    if (this.currentSlide >= maxSlide + this.slidesToShow) {
+    const maxIndex = this.totalSlides;
+    if (this.currentSlide >= maxIndex + this.slidesToShow) {
       this.currentSlide = this.slidesToShow;
       this.updateTrackPosition(false);
-    } else if (this.currentSlide < this.slidesToShow) {
-      this.currentSlide = maxSlide;
+    }
+    if (this.currentSlide < this.slidesToShow) {
+      this.currentSlide = maxIndex;
       this.updateTrackPosition(false);
     }
+  };
 
+  updateTrackPosition(animate = true) {
+    const slideWidth = this.container.offsetWidth / this.slidesToShow;
+    const offset = -this.currentSlide * slideWidth;
+
+    this.track.style.transition = animate
+      ? `transform ${this.options.transitionDuration}ms ${this.options.transition}`
+      : "none";
+
+    this.track.style.transform = `translateX(${offset}px)`;
+  }
+
+  updateState() {
     this.updateCounter();
     this.updateArrows();
     this.updatePagination();
+  }
+
+  updateSlideWidths() {
+    this.track.style.gridAutoColumns = `calc(100% / ${this.slidesToShow})`;
   }
 
   updateCounter() {
-    const actualSlide = this.options.infinite ?
-      Math.max(1, Math.min(Math.ceil(this.totalSlides / this.slidesToShow), Math.ceil((this.currentSlide - this.slidesToShow + 1) / this.options.slidesToScroll) + 1)) :
-      Math.ceil((this.currentSlide + 1) / this.options.slidesToScroll);
+    const totalPages = this.getTotalPages();
 
-    // Обновляем внешний элемент счетчика
-    if (this.currentSlideElement) {
-      this.currentSlideElement.textContent = actualSlide;
+    if (this.options.currentSlideSelector) {
+      const el = document.querySelector(this.options.currentSlideSelector);
+      if (el) el.textContent = this.getCurrentPage();
+    }
+    if (this.options.totalSlidesSelector) {
+      const el = document.querySelector(this.options.totalSlidesSelector);
+      if (el) el.textContent = totalPages;
     }
   }
 
   updateArrows() {
-    if (!this.options.infinite) {
-      if (this.prevBtn) {
-        this.prevBtn.disabled = this.currentSlide <= 0;
-      }
-      if (this.nextBtn) {
-        this.nextBtn.disabled = this.currentSlide >= this.totalSlides - this.slidesToShow;
-      }
-    }
+    if (this.options.infinite) return;
+    const prev = document.querySelector(this.options.prevButtonSelector);
+    const next = document.querySelector(this.options.nextButtonSelector);
+
+    if (prev) prev.disabled = this.currentSlide <= 0;
+    if (next) next.disabled = this.currentSlide >= this.totalSlides - this.slidesToShow;
   }
 
   updatePagination() {
-    if (!this.options.pagination || this.paginationDots.length === 0) return;
-
-    const currentPage = this.getCurrentPage();
-
-    this.paginationDots.forEach((dot, index) => {
-      if (index === currentPage - 1) {
-        dot.classList.add('active');
-      } else {
-        dot.classList.remove('active');
-      }
-    });
+    if (!this.paginationDots.length) return;
+    const current = this.getCurrentPage() - 1;
+    this.paginationDots.forEach((dot, i) =>
+      dot.classList.toggle("active", i === current)
+    );
   }
 
-  updateSlideWidths() {
-    // Вычисляем ширину слайда в процентах
-    const slideWidth = Math.floor(100 / this.slidesToShow) + '%';
+  goToSlide(index) {
+    if (this.isTransitioning) return;
+    this.currentSlide = this.options.infinite ? index + this.slidesToShow : index;
+    this.updateTrackPosition();
+    this.updateState();
+  }
 
-    this.track.style.gridAutoColumns = `calc(100% / ${this.slidesToShow})`
+  nextSlide() {
+    if (this.isTransitioning) return;
+    this.currentSlide += this.options.slidesToScroll;
+    this.updateTrackPosition();
+    this.updateState();
+  }
+
+  prevSlide() {
+    if (this.isTransitioning) return;
+    this.currentSlide -= this.options.slidesToScroll;
+    this.updateTrackPosition();
+    this.updateState();
+  }
+
+  getRealIndex(offsetSlidesToShow = this.slidesToShow) {
+    if (!this.options.infinite) return Math.max(0, Math.min(this.currentSlide, this.totalSlides - 1));
+    const max = this.totalSlides;            // количество РЕАЛЬНЫХ слайдов
+    const offset = offsetSlidesToShow;       // сколько клонов слева
+    let idx = (this.currentSlide - offset) % max;
+    if (idx < 0) idx += max;
+    return idx; // 0..max-1
+  }
+
+  getCurrentPage() {
+    // индекс реального слайда → страница
+    const real = this.getRealIndex();                    // 0..totalSlides-1
+    return Math.floor(real / this.slidesToShow) + 1;     // 1..totalPages
+  }
+
+  getTotalPages() {
+    // totalSlides — количество реальных слайдов (не клонов!)
+    return Math.max(1, Math.ceil(this.totalSlides / this.slidesToShow));
   }
 
   startAutoPlay() {
     if (!this.options.autoPlay || this.totalSlides <= this.slidesToShow) return;
-
     this.pauseAutoPlay();
-    this.autoPlayTimer = setInterval(() => {
-      this.nextSlide();
-    }, this.options.autoPlayDelay);
+    this.autoPlayTimer = setInterval(() => this.nextSlide(), this.options.autoPlayDelay);
   }
 
   pauseAutoPlay() {
@@ -387,71 +283,65 @@ export default class {
     }
   }
 
-  // Публичные методы
-  play() {
-    this.options.autoPlay = true;
-    this.startAutoPlay();
+  setupTouchEvents() {
+    let startX = 0;
+    this.container.addEventListener("touchstart", (e) => {
+      startX = e.touches[0].clientX;
+    });
+    this.container.addEventListener("touchend", (e) => {
+      const diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) diff > 0 ? this.nextSlide() : this.prevSlide();
+    });
   }
 
-  pause() {
-    this.options.autoPlay = false;
-    this.pauseAutoPlay();
-  }
+  handleResize = debounce(() => {
+    const prevSTS = this.slidesToShow;
 
-  destroy() {
-    this.pauseAutoPlay();
-    window.removeEventListener('resize', this.handleResize);
-
-    // Удаляем обработчики с внешних кнопок
-    if (this.prevBtn) {
-      this.prevBtn.removeEventListener('click', this.prevSlide);
-    }
-    if (this.nextBtn) {
-      this.nextBtn.removeEventListener('click', this.nextSlide);
+    // высчитать новое slidesToShow (ваша логика/таблица брейкпоинтов)
+    const width = window.innerWidth;
+    let newSTS = this.options.slidesToShow; // если у вас объект брейкпоинтов — вычислите отсюда
+    if (typeof newSTS !== 'number') {
+      newSTS = 1;
+      for (const bp in this.options.slidesToShow) {
+        if (width >= Number(bp)) newSTS = this.options.slidesToShow[bp];
+      }
     }
 
-    const slides = this.slides
+    if (newSTS === prevSTS) return;
 
-    slides.forEach((slide, index) => {
-      this.track.appendChild(slide);
-    })
-    this.track.style = ''
+    this.rebuildForSlidesToShowChange(prevSTS, newSTS);
+  }, 200);
 
-    // Восстанавливаем оригинальный контент
-    this.container.innerHTML = this.track.outerHTML ;
+  rebuildForSlidesToShowChange(prevSTS, newSTS) {
+    const realIndex = this.getRealIndex(prevSTS);
 
-    if (this.paginationDots.length) {
-      this.paginationDots = []
+    this.removeClones();
+
+    this.slidesToShow = newSTS;
+    this.updateSlideWidths();
+
+    this.cloneSlides(newSTS);
+
+    if (this.options.infinite && this.totalSlides > newSTS) {
+      this.currentSlide = newSTS + realIndex;
+    } else {
+      const maxStart = Math.max(0, this.totalSlides - newSTS);
+      this.currentSlide = Math.min(realIndex, maxStart);
     }
-  }
 
-  goToSlide(index) {
-    if (this.isTransitioning) return;
-
-    this.currentSlide = this.options.infinite ? index + this.slidesToShow : index;
-    this.updateTrackPosition();
+    this.updateTrackPosition(false);
+    this.setupPagination();
     this.updateCounter();
     this.updateArrows();
     this.updatePagination();
   }
 
-  // Геттеры для получения информации о состоянии карусели
-  getCurrentSlide() {
-    return this.options.infinite ?
-      Math.max(1, Math.min(Math.ceil(this.totalSlides / this.slidesToShow), Math.ceil((this.currentSlide - this.slidesToShow + 1) / this.options.slidesToScroll) + 1)) :
-      Math.ceil((this.currentSlide + 1) / this.options.slidesToScroll);
-  }
-
-  getTotalSlides() {
-    return Math.ceil(this.totalSlides / this.slidesToShow);
-  }
-
-  getCurrentPage() {
-    if (this.options.infinite) {
-      const actualSlide = Math.max(0, this.currentSlide - this.slidesToShow);
-      return Math.floor(actualSlide / this.options.slidesToScroll) + 1;
-    } else {
-      return Math.floor(this.currentSlide / this.options.slidesToScroll) + 1;
-    }
+  destroy() {
+    this.isActive = false;
+    this.pauseAutoPlay();
+    window.removeEventListener("resize", this.handleResize);
+    this.track.style = "";
+    this.track.style = "";
+    this.paginationDots = [];
   }
 }
