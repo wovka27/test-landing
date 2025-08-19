@@ -504,7 +504,7 @@ h4, .h4 {
   padding: 18px 0;
   color: var(--color-white);
 }
-.marquee [aria-label] {
+.marquee [data-js-marquee-text] {
   width: 100%;
   position: relative;
   display: inline-block;
@@ -512,8 +512,8 @@ h4, .h4 {
   white-space: pre;
   text-decoration: none;
 }
-.marquee [aria-label]::before {
-  content: attr(aria-label) attr(aria-label);
+.marquee [data-js-marquee-text]::before {
+  content: attr(data-js-marquee-text) attr(data-js-marquee-text);
   text-transform: uppercase;
   position: absolute;
   left: 0;
@@ -521,18 +521,18 @@ h4, .h4 {
   animation: run 15s linear infinite;
   will-change: transform;
 }
-.marquee [aria-label]::after {
-  content: attr(aria-label);
+.marquee [data-js-marquee-text]::after {
+  content: attr(data-js-marquee-text);
   width: min-content;
   visibility: hidden;
 }
 @media (hover: hover) {
-  .marquee [aria-label]:hover [aria-label]::before {
+  .marquee [data-js-marquee-text]:hover [data-js-marquee-text]::before {
     animation-play-state: paused;
   }
 }
 @media (hover: none) {
-  .marquee [aria-label]:active [aria-label]::before {
+  .marquee [data-js-marquee-text]:active [data-js-marquee-text]::before {
     animation-play-state: paused;
   }
 }
@@ -709,6 +709,7 @@ h4, .h4 {
 }
 .session {
   margin-top: 10px;
+  margin-bottom: 163px;
   display: grid;
   grid-template-columns: 609px 1fr;
   grid-gap: 17px;
@@ -919,7 +920,7 @@ h4, .h4 {
   gap: 16px;
   padding: 20px;
   background-blend-mode: color-burn;
-  background: var(--color-brown) url("~images/bg.png") center/cover no-repeat;
+  background: var(--color-brown) url("~images/bg.webp") center/cover no-repeat;
 }
 @media (max-width: 767px) {
   .stages__item {
@@ -939,7 +940,7 @@ h4, .h4 {
 @media (max-width: 767px) {
   .stages__item-wrapper {
     background-blend-mode: color-burn;
-    background: var(--color-brown) url("~images/bg.png") center/cover no-repeat;
+    background: var(--color-brown) url("~images/bg.webp") center/cover no-repeat;
     display: flex;
     height: 300px;
     flex-direction: column;

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+          content="width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0">
+    <meta name="description" content="Тестовое задание для Yandex Crowd">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ТЕСТ</title>
 </head>
@@ -11,13 +12,13 @@
 
 <header class="header">
     <div class="header__bg">
-        <img class="header__img-ellipse" src="./src/assets/images/ellipse.svg" alt="ellipse">
-        <img class="header__img-bg" width="1920" height="881" src="./src/assets/images/bg.png" alt="bg">
-        <img class="header__img-city" width="1634" height="464" src="./src/assets/images/city.png" alt="city">
-        <img class="header__img-chess1" width="130" height="266" src="src/assets/images/chess1.png" alt="chess1">
-        <img class="header__img-chess2" width="146" height="266" src="src/assets/images/chess2.png" alt="chess2">
-        <img class="header__img-chess3" width="83" height="123" src="src/assets/images/chess3.png" alt="chess3">
-        <img class="header__img-chess-horse" width="197" height="269" src="./src/assets/images/chessHorse.png"
+        <img loading="lazy" class="header__img-ellipse" width="776" height="776" src="./src/assets/images/ellipse.svg" alt="ellipse">
+        <img loading="lazy" class="header__img-bg" width="1920" height="881" src="./src/assets/images/bg.webp" alt="bg">
+        <img loading="lazy" class="header__img-city" width="1634" height="464" src="./src/assets/images/city.webp" alt="city">
+        <img loading="lazy" class="header__img-chess1" width="130" height="266" src="src/assets/images/chess1.webp" alt="chess1">
+        <img loading="lazy" class="header__img-chess2" width="146" height="266" src="src/assets/images/chess2.webp" alt="chess2">
+        <img loading="lazy" class="header__img-chess3" width="83" height="123" src="src/assets/images/chess3.webp" alt="chess3">
+        <img loading="lazy" class="header__img-chess-horse" width="197" height="269" src="./src/assets/images/chessHorse.webp"
              alt="chess-horse">
     </div>
 
@@ -48,24 +49,24 @@
 
 <main class="main">
 
-    <section id="support" class="support container mt-80">
-        <h3 class="support__title-wrapper">
+    <section aria-labelledby="support_section" id="support" class="support container mt-80">
+        <h2 id="support_section" class="support__title-wrapper h3">
             <div class="support__title">
                 <p>Чтобы поддержать Международный васюкинский турнир</p>
                 <p>посетите лекцию на тему: <span class="strong">«Плодотворная дебютная идея»</span></p>
             </div>
-            <img width="394" height="250" src="./src/assets/images/many_chees_players.png" alt="картинка поддержки">
-        </h3>
+            <img loading="lazy" width="394" height="250" src="./src/assets/images/many_chees_players.png" alt="картинка поддержки">
+        </h2>
     </section>
 
-    <section id="session" class="session container">
+    <section aria-labelledby="session_section" id="session" class="session container">
         <div class="session__img-wrapper">
-            <img width="530" height="609" src="./src/assets/images/session-img.png" alt="session-img">
+            <img loading="lazy" width="530" height="609" src="./src/assets/images/session-img.webp" alt="session-img">
         </div>
         <div class="session__content-wrapper">
-            <h3 class="session__title">
+            <h2 id="session_section" class="session__title h3">
                 и Сеанс <span class="strong">одновременной игры в шахматы на 160 досках</span> гроссмейстера О. Бендера
-            </h3>
+            </h2>
 
             <div class="session__event-info">
                 <div class="session__event-info__row">
@@ -96,31 +97,32 @@
         </div>
     </section>
 
-    <section id="stages" class="stages container">
-        <h2>Этапы преображения Васюков&nbsp;&nbsp;<a class="link" href="#!">Будущие источники <br> обогащения васюкинцев</a>
+    <section aria-labelledby="stages_section" id="stages" class="stages container">
+        <h2 id="stages_section">Этапы преображения Васюков&nbsp;&nbsp;<a class="link" href="#!">Будущие источники <br>
+            обогащения васюкинцев</a>
         </h2>
         <div data-carousel-list2 class="stages__list">
             <ol class="stages__track">
-                <div class="stages__item-wrapper stages__item-slide">
+                <li class="stages__item-wrapper stages__item-slide">
                     <li class="stages__item stages__item--1">
                         <p>Строительство железнодорожной магистрали Москва-Васюки</p>
                     </li>
                     <li class="stages__item stages__item--2">
                         <p>Открытие фешенебельной гостиницы «Проходная пешка» и других небоскрёбов</p>
                     </li>
-                </div>
+                </li>
                 <li class="stages__item stages__item--3 stages__item-slide">
                     <p>Поднятие сельского хозяйства в радиусе на тысячу километров: производство овощей, фруктов, икры,
                         шоколадных конфет</p>
                 </li>
-                <div class="stages__item-wrapper stages__item-slide">
+                <li class="stages__item-wrapper stages__item-slide">
                     <li class="stages__item stages__item--4">
                         <p>Строительство дворца для турнира</p>
                     </li>
                     <li class="stages__item stages__item--5">
                         <p>Размещение гаражей для гостевого автотранспорта</p>
                     </li>
-                </div>
+                </li>
                 <li class="stages__item stages__item--6 stages__item-slide">
                     <p>Постройка сверхмощной радиостанции для передачи всему миру сенсационных результатов</p>
                 </li>
@@ -132,23 +134,38 @@
         <img width="401" height="241" class="stages__plane" src="./src/assets/images/plane.png" alt="картинка самолета">
         <div class="stages__carousel-actions carousel-actions visible-mobile">
             <button data-carousel-prev-btn2
-                    class="ui-button ui-button--circle ui-button--circle-reverse ui-button--icon-arrow"></button>
+                    class="ui-button ui-button--circle ui-button--circle-reverse ui-button--icon-arrow">
+                <p class="visually-hidden">Предыдущий слайд</p>
+            </button>
             <ul class="stages__dots">
-                <li class="stages__dot active"></li>
-                <li class="stages__dot"></li>
+                <li class="stages__dot active">
+                    <p class="visually-hidden">Кнопка переключения слайда</p>
+                </li>
+                <li class="stages__dot">
+                    <p class="visually-hidden">Предыдущий слайд</p>
+                </li>
 
-            </ul> 
-            <button data-carousel-next-btn2 class="ui-button ui-button--circle ui-button--icon-arrow"></button>
+            </ul>
+            <button data-carousel-next-btn2 class="ui-button ui-button--circle ui-button--icon-arrow">
+                <p class="visually-hidden">Предыдущий слайд</p>
+            </button>
         </div>
     </section>
 
-    <section id="carousel" class="carousel container">
-        <h2>Участники турнира</h2>
+    <section aria-labelledby="carousel_section" id="carousel" class="carousel container">
+        <h2 id="carousel_section">Участники турнира</h2>
         <div class="carousel-actions">
-            <button data-carousel-prev-btn
-                    class="ui-button ui-button--circle ui-button--circle-reverse ui-button--icon-arrow"></button>
+            <button
+                    data-carousel-prev-btn
+                    aria-label="Предыдущий слайд"
+                    class="ui-button ui-button--circle ui-button--circle-reverse ui-button--icon-arrow"
+            >
+                <p class="visually-hidden">Предыдущий слайд</p>
+            </button>
             <span><span data-carousel-current-slide>3</span> / <span data-carousel-total-slides>6</span></span>
-            <button data-carousel-next-btn class="ui-button ui-button--circle ui-button--icon-arrow"></button>
+            <button aria-label="Следующий слайд" data-carousel-next-btn class="ui-button ui-button--circle ui-button--icon-arrow">
+                <p class="visually-hidden">Следующий слайд</p>
+            </button>
         </div>
         <div data-carousel-list class="carousel-list">
             <div class="carousel-track">

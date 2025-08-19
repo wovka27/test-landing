@@ -10,7 +10,7 @@
   padding: 18px 0;
   color: var(--color-white);
 
-  [aria-label] {
+  [data-js-marquee-text] {
     width: 100%;
     position: relative;
     display: inline-block;
@@ -19,7 +19,7 @@
     text-decoration: none;
 
     &::before {
-      content: attr(aria-label) attr(aria-label);
+      content: attr(data-js-marquee-text) attr(data-js-marquee-text);
       text-transform: uppercase;
       position: absolute;
       left: 0;
@@ -29,13 +29,13 @@
     }
 
     &::after {
-      content: attr(aria-label);
+      content: attr(data-js-marquee-text);
       width: min-content;
       visibility: hidden;
     }
 
     @include hover {
-      [aria-label]::before {
+      [data-js-marquee-text]::before {
         animation-play-state: paused;
       }
     }

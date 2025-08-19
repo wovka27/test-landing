@@ -5,10 +5,15 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
   entry: './src/scripts/index.js',
   output: {
-    filename: 'js/[name].[contenthash].js',
+    filename: 'js/main.js',
     path: path.resolve(__dirname, 'dist'),
     assetModuleFilename: 'assets/[hash][ext][query]',
     clean: true,
+  },
+  optimization: {
+    runtimeChunk: false,
+    splitChunks: false,
+    concatenateModules: true
   },
   module: {
     rules: [
@@ -16,7 +21,6 @@ module.exports = {
       {
         test: /\.m?js$/,
         exclude: /node_modules/,
-        use: 'babel-loader',
       },
       // SCSS & CSS
       {
@@ -63,7 +67,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      inject: true,
+      inject: 'body',
       template: './index.html',
       title: 'Заголовок из Webpack',
     }),

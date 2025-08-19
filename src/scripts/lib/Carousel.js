@@ -122,9 +122,10 @@ export default class Carousel {
 
     const pages = this.getTotalPages();
     for (let i = 0; i < pages; i++) {
-      const dot = document.createElement("button");
+      const dot = document.createElement("li");
       dot.className = "pagination-dot";
       dot.dataset.slide = i;
+      dot.innerHTML = '<p class="visually-hidden">Кнопка переключения слайда</p>';
       dot.addEventListener("click", () => this.goToSlide(i));
       container.appendChild(dot);
       this.paginationDots.push(dot);

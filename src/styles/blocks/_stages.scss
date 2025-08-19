@@ -72,7 +72,7 @@
     gap: 16px;
     padding: 20px;
     background-blend-mode: color-burn;
-    background: var(--color-brown) url("~images/bg.png") center/cover no-repeat;
+    background: var(--color-brown) url("~images/bg.webp") center/cover no-repeat;
     //backdrop-filter: sepia(1) saturate(2) hue-rotate(319deg) brightness(0.94);
 
     @include mobile {
@@ -92,7 +92,7 @@
 
       @include mobile {
         background-blend-mode: color-burn;
-        background: var(--color-brown) url("~images/bg.png") center/cover no-repeat;
+        background: var(--color-brown) url("~images/bg.webp") center/cover no-repeat;
         display: flex;
         height: 300px;
         flex-direction: column;

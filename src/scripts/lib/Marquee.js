@@ -18,7 +18,7 @@ export default class {
   createContent = (parent) => {
     const div = document.createElement('div');
 
-    div.setAttribute('aria-label', this.options.text)
+    div.dataset.jsMarqueeText = this.options.text
 
     parent.appendChild(div);
   }
