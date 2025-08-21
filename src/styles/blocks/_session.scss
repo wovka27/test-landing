@@ -67,7 +67,7 @@
     }
 
     &--group {
-     scale: 0.9;
+      scale: 0.9;
       top: 50%;
       left: 55%;
       translate: -50% -50%;
@@ -78,6 +78,57 @@
       top: 50%;
       left: 50%;
       translate: -50% -50%;
+    }
+
+    @include mobile {
+      &--run {
+        width: 193px;
+        height: auto;
+        left: 50%;
+        translate: -7%;
+        bottom: -11%;
+      }
+
+      &--money {
+        scale: 0.8;
+        right: 50%;
+        translate: 150%;
+        top: -5%;
+      }
+
+      &--bah1 {
+        width: fluid(530, 300);
+        height: auto;
+        top: 40%;
+        left: 50%;
+        translate: -50% -65%;
+      }
+
+      &--bah2 {
+        scale: 0.7;
+        bottom: -10%;
+        right: 44%;
+      }
+
+      &--black-horse {
+        scale: 0.7;
+        bottom: -17%;
+        right: 44%;
+      }
+
+      &--group {
+        scale: 0.65;
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+      }
+
+      &--paper {
+        scale: 0.8;
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+      }
     }
   }
 

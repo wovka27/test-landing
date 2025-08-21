@@ -805,6 +805,50 @@ h4, .h4 {
   left: 50%;
   translate: -50% -50%;
 }
+@media (max-width: 767px) {
+  .session__img--run {
+    width: 193px;
+    height: auto;
+    left: 50%;
+    translate: -7%;
+    bottom: -11%;
+  }
+  .session__img--money {
+    scale: 0.8;
+    right: 50%;
+    translate: 150%;
+    top: -5%;
+  }
+  .session__img--bah1 {
+    width: clamp(18.75rem, 15.0857843137rem + 15.0326797386vw, 33.125rem);
+    height: auto;
+    top: 40%;
+    left: 50%;
+    translate: -50% -65%;
+  }
+  .session__img--bah2 {
+    scale: 0.7;
+    bottom: -10%;
+    right: 44%;
+  }
+  .session__img--black-horse {
+    scale: 0.7;
+    bottom: -17%;
+    right: 44%;
+  }
+  .session__img--group {
+    scale: 0.65;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+  }
+  .session__img--paper {
+    scale: 0.8;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+  }
+}
 .session__content-wrapper {
   margin-top: 47px;
 }
