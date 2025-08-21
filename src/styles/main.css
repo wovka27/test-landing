@@ -985,6 +985,11 @@ h4, .h4 {
 .stages h2 a {
   text-transform: lowercase;
 }
+@media (max-width: 767px) {
+  .stages h2 a {
+    font-size: 18px;
+  }
+}
 .stages__dots {
   display: flex;
   align-items: center;
@@ -1153,7 +1158,7 @@ h4, .h4 {
     width: 317px;
     height: auto;
     display: block;
-    top: 16rem;
+    top: 13rem;
     bottom: inherit;
     left: 50%;
     translate: -50% 0;

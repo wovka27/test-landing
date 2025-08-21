@@ -3,6 +3,10 @@
 
   h2 a {
     text-transform: lowercase;
+
+    @include mobile {
+      font-size: 18px;
+    }
   }
 
   &__dots {
@@ -168,7 +172,7 @@
       width: 317px;
       height: auto;
       display: block;
-      top: 16rem;
+      top: 13rem;
       bottom: inherit;
       left: 50%;
       translate: -50% 0;
