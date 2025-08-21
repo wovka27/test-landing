@@ -56,11 +56,8 @@ export default class Carousel {
   }
 
   handleMediaChange = (e) => {
-    if (e.matches && !this.isActive) {
-      this.init();
-    } else if (!e.matches && this.isActive) {
-      this.destroy();
-    }
+    if (e.matches && !this.isActive) this.init()
+    else if (!e.matches && this.isActive) this.destroy()
   }
 
   init() {
@@ -121,6 +118,7 @@ export default class Carousel {
     this.paginationDots = [];
 
     const pages = this.getTotalPages();
+
     for (let i = 0; i < pages; i++) {
       const dot = document.createElement("li");
       dot.className = "pagination-dot";
